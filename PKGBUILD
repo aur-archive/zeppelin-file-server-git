@@ -1,0 +1,36 @@
+pkgname=zeppelin-file-server-git
+
+pkgver=0.5.gc1f650b
+pkgrel=1
+pkgdesc="File server plugin for zeppelin media server."
+arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+url="https://github.com/giszo/zeppelin-file-server"
+license=('GPL3')
+
+depends=('zeppelin-git' 'zeppelin-http-server-git')
+
+makedepends=('scons' 'git')
+
+source=("git://github.com/giszo/zeppelin-file-server")
+
+md5sums=('SKIP')
+
+pkgver() #
+{
+  cd "${srcdir}/zeppelin-file-server"
+  # git describe --long | sed -r 's/([^-]*-g)/r\1/;s/-/./g'
+  echo 0.`git rev-list --count HEAD`.g`git rev-parse --short HEAD`
+}
+
+build() #
+{
+  cd "${srcdir}/zeppelin-file-server"
+  scons
+}
+
+package() #
+{
+  cd "${srcdir}/zeppelin-file-server"
+  mkdir -pv ${pkgdir}/usr
+  scons install PREFIX=${pkgdir}/usr
+}
